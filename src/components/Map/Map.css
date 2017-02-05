@@ -1,0 +1,12 @@
+.map {
+  position: relative;
+}
+
+.marker {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background: red;
+  position: absolute;
+  transform: translate(-5px, -5px);
+}
