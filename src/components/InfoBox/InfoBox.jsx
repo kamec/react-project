@@ -4,11 +4,13 @@ class InfoBox extends Component {
   render() {
     return (
       <div>
-        <div>Latitude: {this.props.latitude}</div>
-        <div>Longitude: {this.props.longitude}</div>
+        <div>Latitude: {this.props.lat}</div>
+        <div>Longitude: {this.props.lng}</div>
       </div>
+
     )
   }
 }
 
-export default InfoBox;
+
+  export default InfoBox;

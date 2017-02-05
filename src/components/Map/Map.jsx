@@ -11,15 +11,28 @@ class Map extends Component {
   }
 
   componentDidMount() {
-    MapStore.subscribe(this.onChange);
+    MapStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
-    MapStore.unsubscribe(this.onChange);
+    MapStore.removeChangeListener(this.onChange);
   }
 
   onChange = () => {
     this.setState({marker: MapStore.marker})
+  }
+
+  renderMarker() {
+    const coordinates = this.state.marker;
+
+    const markerStyle = {
+      top: coordinates.lat,
+      left: coordinates.lng
+    };
+
+    return (
+      <div className="marker" style={markerStyle}></div>
+    )
   }
 
   render() {
@@ -31,20 +44,6 @@ class Map extends Component {
       </div>
     )
   }
-
-  renderMarker() {
-    const coordinates = this.state.marker;
-
-    const markerStyle = {
-      top: coordinates.latitude,
-      left: coordinates.longitude
-    }
-
-    return (
-      <div className="marker" style={markerStyle}></div>
-    )
-  }
-
 }
 
 export default Map;

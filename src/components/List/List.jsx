@@ -1,11 +1,30 @@
 import React, {Component} from 'react';
+import ListStore from '../../stores/ListStore';
 import MapActions from '../../actions/MapActions';
 
 class List extends Component {
 
+  componentWillMount() {
+    this.state = {
+      items: ListStore.items
+    };
+  }
+
+  componentDidMount() {
+    ListStore.addChangeListener(this.onChange);
+  }
+
+  componentWillUnmount() {
+    ListStore.removeChangeListener(this.onChange);
+  }
+
+  onChange = () => {
+    this.setState({items: ListStore.items});
+  }
+
   onListItemClick = (item) => {
     return function() {
-      MapActions.setMarkerOnMap(item.latitude, item.longitude);
+      MapActions.setMarkerOnMap(item.lat, item.lng);
     }
   }
 
@@ -18,20 +37,9 @@ class List extends Component {
   }
 
   render() {
-    const items = [
-      {
-        name: 'Hello',
-        latitude: 100,
-        longitude: 100
-      }, {
-        name: 'World',
-        latitude: 250,
-        longitude: 350
-      }
-    ];
     return (
       <ul>
-        {items.map(item => this.renderItem(item))}
+        {this.state.items.map(item => this.renderItem(item))}
       </ul>
     )
   }
