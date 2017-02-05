@@ -25,8 +25,8 @@ class List extends Component {
         longitude: 100
       }, {
         name: 'World',
-        latitude: 50,
-        longitude: 50
+        latitude: 250,
+        longitude: 350
       }
     ];
     return (

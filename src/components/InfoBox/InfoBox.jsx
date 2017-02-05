@@ -9,7 +9,6 @@ class InfoBox extends Component {
       </div>
     )
   }
-
 }
 
 export default InfoBox;

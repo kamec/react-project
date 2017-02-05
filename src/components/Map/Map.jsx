@@ -11,15 +11,25 @@ class Map extends Component {
   }
 
   componentDidMount() {
-    MapStore.addChangeListener(this.onChange);
+    MapStore.subscribe(this.onChange);
   }
 
   componentWillUnmount() {
-    MapStore.removeChangeListener(this.onChange);
+    MapStore.unsubscribe(this.onChange);
   }
 
   onChange = () => {
     this.setState({marker: MapStore.marker})
+  }
+
+  render() {
+    return (
+      <div className="map">
+        <img src="http://data.whicdn.com/images/63749112/large.jpg" alt="map"/> {this.state.marker
+          ? this.renderMarker()
+          : null}
+      </div>
+    )
   }
 
   renderMarker() {
@@ -35,14 +45,6 @@ class Map extends Component {
     )
   }
 
-  render() {
-    return (
-      <div className="map">
-        <img src="http://data.whicdn.com/images/63749112/large.jpg" alt="map"/>
-        {this.state.marker ? this.renderMarker() : null}
-      </div>
-    )
-  }
 }
 
 export default Map;

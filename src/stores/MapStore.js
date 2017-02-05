@@ -7,11 +7,11 @@ class MapStore extends EventEmitter {
     this.marker = null;
   }
 
-  addChangeListener(callback) {
+  subscribe(callback) {
     this.on('CHANGED', callback);
   }
 
-  removeChangeListener(callback) {
+  unsubscribe(callback) {
     this.removeListener('CHANGED', callback);
   }
 
@@ -20,17 +20,20 @@ class MapStore extends EventEmitter {
   }
 }
 
-
 let store = new MapStore();
+
 store.dispatchToken = AppDispatcher.register(action => {
-    switch (action.actionType) {
+  switch (action.actionType) {
     case 'MAP_CHANGED':
       store.setMarker(action.marker);
       store.emit('CHANGED');
       break;
+    case 'CHANGED':
+      console.log('GUYS, GUYS... CHANGED!!11');
+      break;
     default:
       break;
-    }
+  }
 });
 
 export default store;
