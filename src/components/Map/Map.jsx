@@ -12,6 +12,7 @@ class Map extends Component {
 
   componentDidMount() {
     MapStore.addChangeListener(this.onChange);
+    this.map = this.getNewMap(this.props.initialPosition, 4);
   }
 
   componentWillUnmount() {
@@ -22,25 +23,47 @@ class Map extends Component {
     this.setState({marker: MapStore.marker})
   }
 
+  getNewMap = (center, zoom) => {
+    return new window.google.maps.Map(this.refs.map, {
+      center,
+      scrollwheel: true,
+      zoom,
+      mapTypeControl: false,
+      streetViewControl: false
+    });
+  }
+
+  setMarker = (marker) => {
+    const {lat, lng} = this.state.marker;
+    new window.google.maps.Marker({
+      map: this.map,
+      position: {
+        lat,
+        lng
+      },
+      label: this.state.marker.name,
+      draggable: true
+    });
+  }
+
   renderMarker() {
-    const coordinates = this.state.marker;
-
-    const markerStyle = {
-      top: coordinates.lat,
-      left: coordinates.lng
-    };
-
-    return (
-      <div className="marker" style={markerStyle}></div>
-    )
+    const {lat, lng} = this.state.marker;
+    this.map = this.getNewMap({
+      lat,
+      lng
+    }, 4);
+    this.setMarker(this.state.marker);
   }
 
   render() {
     return (
-      <div className="map">
-        <img src="http://data.whicdn.com/images/63749112/large.jpg" alt="map"/> {this.state.marker
-          ? this.renderMarker()
-          : null}
+      <div>
+        <div className="map" ref="map">
+          <object type="%PUBLIC_URL%/loading.svg" data="loading.svg" className="loading"></object>
+          {this.state.marker
+            ? this.renderMarker()
+            : null}
+        </div>
       </div>
     )
   }

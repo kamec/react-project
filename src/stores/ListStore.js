@@ -9,12 +9,12 @@ class ListStore extends EventEmitter {
     super(...args);
     this.items = [{
       name: 'Hello',
-      lat: 100,
-      lng: 100
+      lat: 25.0,
+      lng: 131.0
     }, {
       name: 'World',
-      lat: 50,
-      lng: 50
+      lat: 50.0,
+      lng: 50.0
     }];
   }
 

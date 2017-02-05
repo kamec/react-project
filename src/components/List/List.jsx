@@ -24,14 +24,16 @@ class List extends Component {
 
   onListItemClick = (item) => {
     return function() {
-      MapActions.setMarkerOnMap(item.lat, item.lng);
+      MapActions.setMarkerOnMap(item);
     }
   }
 
   renderItem = (item) => {
     return (
       <li key={item.name}>
+        <input type="checkbox"></input>
         <a href="#" onClick={this.onListItemClick(item)}>{item.name}</a>
+        <button>X</button>
       </li>
     )
   }

@@ -13,7 +13,7 @@ class App extends Component {
         <div>
           <Form />
           <List />
-          <Map />
+          <Map initialPosition={{lat: 50.0, lng: 2.0}}/>
           <InfoBox
             // lat={this.state.marker.lat}
             // lng={this.state.marker.lng}

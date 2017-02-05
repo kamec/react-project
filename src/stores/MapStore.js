@@ -1,5 +1,5 @@
 import {EventEmitter} from 'events';
-import AppDispatcher from '../dispatcher/AppDispatcher'
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
 class MapStore extends EventEmitter {
 
@@ -26,7 +26,6 @@ let store = new MapStore();
 store.dispatchToken = AppDispatcher.register((action) => {
   switch(action.actionType) {
     case 'MAP_CHANGED':
-    console.log(action.marker);
     store.setMarker(action.marker);
     store.emit('CHANGED');
     break;

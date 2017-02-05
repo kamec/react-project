@@ -2,12 +2,13 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 
 export default {
 
-  setMarkerOnMap(lat, lng) {
+  setMarkerOnMap(item) {
     AppDispatcher.dispatch({
       actionType: 'MAP_CHANGED',
       marker: {
-        lat,
-        lng
+        name: item.name,
+        lat: item.lat,
+        lng: item.lng
       }
     });
   }
