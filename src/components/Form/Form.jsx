@@ -30,6 +30,7 @@ class Form extends Component {
     }
 
     ListActions.addItem({
+      id: Date.now(),
       name: tokens[0],
       lat: Number.parseInt(tokens[1], 10),
       lng: Number.parseInt(tokens[2], 10)

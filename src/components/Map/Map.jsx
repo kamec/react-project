@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import MapStore from '../../stores/MapStore';
+import ListActions from '../../actions/ListActions';
+
 import './Map.css';
 
 class Map extends Component {
@@ -10,9 +12,14 @@ class Map extends Component {
     };
   }
 
+  onMapClick = (event) => {
+    ListActions.addItem({id: Date.now(), name: 'new point', lat: event.latLng.lat(), lng: event.latLng.lng()});
+  }
+
   componentDidMount() {
     MapStore.addChangeListener(this.onChange);
     this.map = this.getNewMap(this.props.initialPosition, 4);
+    this.map.addListener('click', this.onMapClick.bind(this));
   }
 
   componentWillUnmount() {
@@ -55,11 +62,19 @@ class Map extends Component {
     this.setMarker(this.state.marker);
   }
 
+  showLoadingIcon = () => {
+    return (
+      <object type="%PUBLIC_URL%/loading.svg" data="loading.svg" className="loading"></object>
+    )
+  }
+
   render() {
     return (
       <div>
         <div className="map" ref="map">
-          <object type="%PUBLIC_URL%/loading.svg" data="loading.svg" className="loading"></object>
+          {window.google
+            ? this.showLoadingIcon()
+            : null}
           {this.state.marker
             ? this.renderMarker()
             : null}

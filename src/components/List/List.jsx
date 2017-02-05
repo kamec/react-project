@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import ListStore from '../../stores/ListStore';
 import MapActions from '../../actions/MapActions';
 
+import './List.css';
+
 class List extends Component {
 
   componentWillMount() {
@@ -30,17 +32,17 @@ class List extends Component {
 
   renderItem = (item) => {
     return (
-      <li key={item.name}>
-        <input type="checkbox"></input>
-        <a href="#" onClick={this.onListItemClick(item)}>{item.name}</a>
-        <button>X</button>
+      <li key={item.id}>
+        <input type="checkbox" onChange={this.onListItemClick(item)}></input>
+        <a href="#">{item.name}</a>
+        <button>x</button>
       </li>
     )
   }
 
   render() {
     return (
-      <ul>
+      <ul className="marker-list">
         {this.state.items.map(item => this.renderItem(item))}
       </ul>
     )

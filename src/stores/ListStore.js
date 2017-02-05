@@ -8,10 +8,12 @@ class ListStore extends EventEmitter {
   constructor(...args) {
     super(...args);
     this.items = [{
+      id: 0,
       name: 'Hello',
       lat: 25.0,
       lng: 131.0
     }, {
+      id: 1,
       name: 'World',
       lat: 50.0,
       lng: 50.0
