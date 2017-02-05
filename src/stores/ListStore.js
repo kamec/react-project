@@ -1,49 +1,43 @@
-import {
-  EventEmitter
-} from 'events';
-import AppDispatcher from '../dispatcher/AppDispatcher'
+import Immutable from 'immutable';
+import {ReduceStore} from 'flux/utils';
 
-class ListStore extends EventEmitter {
+import AppDispatcher from '../dispatcher/AppDispatcher';
+import ListActionTypes from '../actions/ListActionTypes';
+import Marker from '../entities/Marker';
 
-  constructor(...args) {
-    super(...args);
-    this.items = [{
-      id: 0,
-      name: 'Hello',
-      lat: 25.0,
-      lng: 131.0
-    }, {
-      id: 1,
-      name: 'World',
-      lat: 50.0,
-      lng: 50.0
-    }];
+class ListStore extends ReduceStore {
+
+  constructor() {
+    super(AppDispatcher);
   }
 
-  addChangeListener(callback) { //subscribe
-    this.on('CHANGED', callback);
+  getInitialState() {
+    return Immutable.OrderedMap()
+    .set(0, new Marker({id: 0, name: 'Hello', lat: 25.0, lng: 131.0, chosen: false}))
+    .set(1, new Marker({id: 1, name: 'World', lat: 50.0, lng: 50.0, chosen: true}));
   }
 
-  removeChangeListener(callback) {
-    this.removeListener('CHANGED', callback);
-  }
+  reduce(state, action) {
+    switch (action.type) {
+      case ListActionTypes.ADD_MARKER:
+        const id = Date.now();
+        const {name, lat, lng} = action.marker;
+        const chosen = false;
+        return state.set(id, new Marker({id, name, lat, lng, chosen}));
 
-  addItem(item) {
-    this.items.push(item);
+      case ListActionTypes.REMOVE_MARKER:
+        return state.delete(action.id);
+
+      case ListActionTypes.TOGGLE_MARKER:
+        return state.update(
+          action.id,
+          marker => marker.set('chosen', !marker.chosen),
+        );
+
+      default:
+        return state;
+    }
   }
 }
 
-let store = new ListStore();
-
-store.dispatchToken = AppDispatcher.register((action) => {
-  switch (action.actionType) {
-    case 'LIST_CHANGED':
-      store.addItem(action.item);
-      store.emit('CHANGED');
-      break;
-    default:
-      break;
-  }
-});
-
-export default store;
+export default new ListStore();

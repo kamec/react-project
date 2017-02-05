@@ -1,11 +1,33 @@
-import {EventEmitter} from 'events';
+import Immutable from 'immutable';
+import {ReduceStore} from 'flux/utils';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
-class MapStore extends EventEmitter {
+import ListActionTypes from '../actions/ListActionTypes';
+import Marker from '../entities/Marker';
 
-  constructor(...args) {
-    super(...args);
-    this.marker = null;
+class MapStore extends ReduceStore {
+
+  constructor() {
+    super(AppDispatcher);
+  }
+
+  getInitialState() {
+    return Immutable.OrderedMap();
+  }
+
+  reduce(state, action) {
+    switch (action.type) {
+      case ListActionTypes.ADD_MARKER:
+        const id = Date.now();
+        const {name, lat, lng} = action.marker;
+        return state.set(id, new Marker({id, name, lat, lng}));
+
+      case ListActionTypes.REMOVE_MARKER:
+        return state.delete(action.id);
+      default:
+        return state;
+
+    }
   }
 
   addChangeListener(callback) { //subscribe
@@ -16,23 +38,10 @@ class MapStore extends EventEmitter {
     this.removeListener('CHANGED', callback);
   }
 
-  setMarker(marker) {
+  toggleMarker(marker) {
     this.marker = marker;
   }
 
 }
 
-let store = new MapStore();
-
-store.dispatchToken = AppDispatcher.register((action) => {
-  switch (action.actionType) {
-    case 'MAP_CHANGED':
-      store.setMarker(action.marker);
-      store.emit('CHANGED');
-      break;
-    default:
-      break;
-  }
-});
-
-export default store;
+export default new MapStore();

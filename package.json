@@ -5,7 +5,8 @@
   "devDependencies": {
     "events": "^1.1.1",
     "flux": "^3.1.2",
-    "react-scripts": "0.8.5"
+    "react-scripts": "0.8.5",
+    "immutable": "3.8.1"
   },
   "dependencies": {
     "react": "^15.4.2",

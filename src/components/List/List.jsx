@@ -1,52 +1,38 @@
-import React, {Component} from 'react';
-import ListStore from '../../stores/ListStore';
-import MapActions from '../../actions/MapActions';
+import React from 'react';
 
 import './List.css';
 
-class List extends Component {
-
-  componentWillMount() {
-    this.state = {
-      items: ListStore.items
-    };
+function List(props) {
+  if (props.markers.size === 0) {
+    return null;
   }
 
-  componentDidMount() {
-    ListStore.addChangeListener(this.onChange);
-  }
+  return (
+    <ul>
+      {[...props.markers.values()].map(marker => (
+        <MarkerItem
+          key={marker.id}
+          id={marker.id}
+          name={marker.name}
+          lat={marker.lat}
+          lng={marker.lng}
+          chosen={marker.chosen}
+          onDeleteMarker={props.onDeleteMarker}
+          onToggleMarker={props.onToggleMarker}
+          onStartEditingMarker={props.onStartEditingMarker}
+          />
+      ))}
+    </ul>
+  );
+}
 
-  componentWillUnmount() {
-    ListStore.removeChangeListener(this.onChange);
-  }
+function MarkerItem(props) {
+  const onDeleteMarker = () => props.onDeleteMarker(props.id);
+  const onToggleMarker = () => props.onToggleMarker(props.id);
 
-  onChange = () => {
-    this.setState({items: ListStore.items});
-  }
-
-  onListItemClick = (item) => {
-    return function() {
-      MapActions.setMarkerOnMap(item);
-    }
-  }
-
-  renderItem = (item) => {
-    return (
-      <li key={item.id}>
-        <input type="checkbox" onChange={this.onListItemClick(item)}></input>
-        <a href="#">{item.name}</a>
-        <button>x</button>
-      </li>
-    )
-  }
-
-  render() {
-    return (
-      <ul className="marker-list">
-        {this.state.items.map(item => this.renderItem(item))}
-      </ul>
-    )
-  }
+  return (
+    <li><input type="checkbox" onChange={onToggleMarker} checked={props.chosen}/><label>{props.name}</label><button onClick={onDeleteMarker} >x</button></li>
+  );
 }
 
 export default List;

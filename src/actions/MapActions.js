@@ -2,7 +2,7 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 
 export default {
 
-  setMarkerOnMap(item) {
+  toggleMarkerOnMap(item) {
     AppDispatcher.dispatch({
       actionType: 'MAP_CHANGED',
       marker: {
