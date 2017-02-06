@@ -7,7 +7,7 @@ import Map from './components/Map/Map';
 function App(props) {
   return (
     <div>
-      <List {...props}/>
+      <List {...props} />
       <Map {...props} />
     </div>
   );

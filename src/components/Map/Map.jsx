@@ -1,59 +1,39 @@
 import React from 'react';
-
 import './Map.css';
 
 function Map(props) {
+  let map = null;
+  const opts = {
+    center: {
+      lat: 2.0,
+      lng: 50.0
+    },
+    zoom: 4
+  }
+
   return (
     <div>
-      <div className="map" ref="map">
-        {window.google
-          ? showLoadingIcon()
-          : null}
-        {this.state.marker
-          ? renderMarker()
-          : null}
-      </div>
+      <div className="map" ref={div => {
+        map = new window.google.maps.Map(div, opts);
+        buildMarkers(props, map);
+      }}></div>
     </div>
   )
 }
 
-function getNewMap(center, zoom) {
-  return new window.google.maps.Map(this.refs.map, {
-    center,
-    scrollwheel: true,
-    zoom,
-    mapTypeId: window.google.maps.MapTypeId.TERRAIN,
-    mapTypeControl: false,
-    streetViewControl: false
-  });
+function buildMarkers(props, map) {
+  [...props.markers.filter(marker => marker.chosen).values()].map(marker => toConfig(marker, map)).map(conf => new window.google.maps.Marker(conf));
 }
 
-function setMarker(marker) {
-  const {lat, lng} = this.state.marker;
-  new window.google.maps.Marker({
-    map: this.map,
+function toConfig(marker, map) {
+  return {
+    title: marker.name,
     position: {
-      lat,
-      lng
+      lat: marker.lat,
+      lng: marker.lng
     },
-    label: this.state.marker.name,
-    draggable: true
-  });
-}
-
-function renderMarker() {
-  const {lat, lng} = this.state.marker;
-  this.map = this.getNewMap({
-    lat,
-    lng
-  }, 4);
-  this.setMarker(this.state.marker);
-}
-
-function showLoadingIcon() {
-  return (
-    <object type="%PUBLIC_URL%/loading.svg" data="loading.svg" className="loading"></object>
-  )
+    map: map
+  }
 }
 
 export default Map;
