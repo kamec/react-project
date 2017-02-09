@@ -1,39 +1,70 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './Map.css';
 
-function Map(props) {
-  let map = null;
-  const opts = {
-    center: {
-      lat: 2.0,
-      lng: 50.0
-    },
-    zoom: 4
+export default class Map extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      map: null,
+      markers: [],
+      opts: {
+        center: {
+          lat: 0.0,
+          lng: 0.0
+        },
+        zoom: 1,
+        streetViewControl: false,
+        mapTypeControl: false
+      }
+    }
   }
 
-  return (
-    <div>
-      <div className="map" ref={div => {
-        map = new window.google.maps.Map(div, opts);
-        buildMarkers(props, map);
-      }}></div>
-    </div>
-  )
-}
+  componentDidMount() {
+    this.updateState(this.props);
+  }
 
-function buildMarkers(props, map) {
-  [...props.markers.filter(marker => marker.chosen).values()].map(marker => toConfig(marker, map)).map(conf => new window.google.maps.Marker(conf));
-}
+  componentWillReceiveProps(nextProps) {
+    this.state.markers.forEach(marker => marker.setMap(null));
+    this.updateState(nextProps);
+  }
 
-function toConfig(marker, map) {
-  return {
-    title: marker.name,
-    position: {
-      lat: marker.lat,
-      lng: marker.lng
-    },
-    map: map
+  componentDidUpdate() {
+    this.state.markers.forEach(marker => marker.setMap(this.state.map));
+  }
+
+  updateState(props) {
+    if (!this.state.map) {
+      const mapDiv = document.getElementsByClassName('map')[0];
+      this.setState({
+        map: new window.google.maps.Map(mapDiv, this.state.opts)
+      });
+    }
+    this.setState({markers: this.buildMarkers(props)});
+  }
+
+  buildMarkers(props) {
+    if (!props) {
+      return [];
+    }
+    return [...props.markers.filter(marker => marker.chosen).values()].map(marker => this.toConfig(marker)).map(conf => new window.google.maps.Marker(conf));
+  }
+
+  toConfig(marker) {
+    return {
+      draggable: true,
+      label: marker.name,
+      position: {
+        lat: marker.lat,
+        lng: marker.lng
+      }
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <div className="map"></div>
+      </div>
+    )
   }
 }
-
-export default Map;
