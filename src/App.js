@@ -1,13 +1,13 @@
 import React from 'react';
 import './App.css';
 
-import List from './components/List/List';
+import MarkerList from './components/MarkerList/MarkerList';
 import Map from './components/Map/Map';
 
 function App(props) {
   return (
     <div>
-      <List {...props} />
+      <MarkerList {...props} />
       <Map {...props} />
     </div>
   );

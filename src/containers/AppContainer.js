@@ -1,24 +1,35 @@
-import {Container} from 'flux/utils';
+import {
+  Container
+} from 'flux/utils';
 
 import App from '../App';
 
-import ListActions from '../actions/ListActions';
-import ListStore from '../stores/ListStore';
+import MarkerActions from '../actions/MarkerActions';
+import MarkerStore from '../stores/MarkerStore';
+import MarkerDraftStore from '../stores/MarkerDraftStore';
+import MarkerEditStore from '../stores/MarkerEditStore';
 
 function getStores() {
   return [
-    ListStore,
+    MarkerStore,
+    MarkerDraftStore,
+    MarkerEditStore,
   ];
 }
 
 function getState() {
   return {
-    markers: ListStore.getState(),
+    draft: MarkerDraftStore.getState(),
+    editing: MarkerEditStore.getState(),
+    markers: MarkerStore.getState(),
 
-    onAddMarker: ListActions.addMarker,
-    onDeleteMarker: ListActions.removeMarker,
-    onToggleMarker: ListActions.toggleMarker,
-    onEditMarker: ListActions.editMarker,
+    onAddMarker: MarkerActions.addMarker,
+    onDeleteMarker: MarkerActions.removeMarker,
+    onToggleMarker: MarkerActions.toggleMarker,
+    onEditMarker: MarkerActions.editMarker,
+    onStartEditMarker: MarkerActions.startEditMarker,
+    onStopEditMarker: MarkerActions.stopEditMarker,
+    onUpdateDraft: MarkerActions.updateMarkerDraft,
   };
 }
 
