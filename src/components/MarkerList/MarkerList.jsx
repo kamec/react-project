@@ -41,7 +41,6 @@ function prepareMarker(markerString) {
 
 const ENTER_KEY_CODE = 13;
 function NewMarkerInput(props) {
-  console.log(props.draft);
   const addMarker = () => props.onAddMarker(prepareMarker(props.draft));
   const onBlur = () => addMarker();
   const onChange = (event) => props.onUpdateDraft(event.target.value);
