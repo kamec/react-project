@@ -1,35 +1,70 @@
 import MarkerActionTypes from './MarkerActionTypes';
-import AppDispatcher from '../dispatcher/AppDispatcher';
+
+let nextMarkerId = 0;
 
 const Actions = {
-  addMarker(marker) {
-    console.log(marker);
-    AppDispatcher.dispatch({ type: MarkerActionTypes.ADD_MARKER, marker });
+  addMarker: (marker) => {
+    return {
+      type: MarkerActionTypes.ADD_MARKER,
+      payload: {
+        id: nextMarkerId++,
+        marker,
+      },
+    }
   },
 
-  removeMarker(id) {
-    AppDispatcher.dispatch({ type: MarkerActionTypes.REMOVE_MARKER, id });
+  removeMarker: (id) => {
+    return {
+      type: MarkerActionTypes.REMOVE_MARKER,
+      payload: {
+        id,
+      },
+    }
   },
 
-  toggleMarker(id) {
-    AppDispatcher.dispatch({ type: MarkerActionTypes.TOGGLE_MARKER, id });
+  toggleMarker: (id) => {
+    return {
+      type: MarkerActionTypes.TOGGLE_MARKER,
+      payload: {
+        id,
+      },
+    }
   },
 
-  editMarker(marker) {
-    AppDispatcher.dispatch({ type: MarkerActionTypes.EDIT_MARKER, marker });
+  editMarker: (id, name) => {
+    return {
+      type: MarkerActionTypes.EDIT_MARKER,
+      payload: {
+        id,
+        name,
+      },
+    }
   },
 
-  updateMarkerDraft(marker) {
-    AppDispatcher.dispatch({ type: MarkerActionTypes.UPDATE_MARKER_DRAFT, marker });
+  updateMarkerDraft: (marker) => {
+    return {
+      type: MarkerActionTypes.UPDATE_MARKER_DRAFT,
+      payload: {
+        marker,
+      }
+    }
   },
 
-  startEditMarker(id) {
-    AppDispatcher.dispatch({ type: MarkerActionTypes.START_EDIT_MARKER, id, });
+  startEditMarker: (id) => {
+    return {
+      type: MarkerActionTypes.START_EDIT_MARKER,
+      payload: {
+        id,
+      },
+    }
   },
 
-  stopEditMarker() {
-    AppDispatcher.dispatch({ type: MarkerActionTypes.STOP_EDIT_MARKER, });
-  },
-};
+  stopEditMarker: () => {
+    return {
+      type: MarkerActionTypes.STOP_EDIT_MARKER,
+      payload: {},
+    }
+  }
+}
 
 export default Actions;
