@@ -1,10 +1,19 @@
-import React from 'react';
-import Marker from './Marker';
+import React, {Component, PropTypes} from 'react'
+import Marker from './Marker'
 
-const MarkerList = ({markers, onMarkerClick, onMarkerRemove}) => (
-  <ul>
-    {markers.map((marker, id) => <Marker key={id} marker={marker} onClick={() => onMarkerClick(id)} onMarkerRemove/>)}
-  </ul>
-)
+export default class MarkerList extends Component {
 
-export default MarkerList;
+  static propTypes = {
+    actions: PropTypes.object.isRequired,
+    markers: PropTypes.array.isRequired,
+  }
+
+  render() {
+    const {markers, actions} = this.props;
+    return (
+      <ul>
+        {markers.map((marker, id) => <Marker key={marker.id} marker={marker} {...actions}/>)}
+      </ul>
+    )
+  }
+}

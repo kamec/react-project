@@ -1,5 +1,5 @@
-import {combineReducers} from 'redux';
-import markers from './markers';
+import {combineReducers} from 'redux'
+import markers from './markers'
 
 const mapApp = combineReducers({
   markers,

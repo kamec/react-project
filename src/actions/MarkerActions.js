@@ -1,70 +1,47 @@
-import MarkerActionTypes from './MarkerActionTypes';
+import * as types from '../constants/ActionTypes';
 
-let nextMarkerId = 0;
-
-const Actions = {
-  addMarker: (marker) => {
-    return {
-      type: MarkerActionTypes.ADD_MARKER,
-      payload: {
-        id: nextMarkerId++,
-        marker,
-      },
-    }
-  },
-
-  removeMarker: (id) => {
-    return {
-      type: MarkerActionTypes.REMOVE_MARKER,
-      payload: {
-        id,
-      },
-    }
-  },
-
-  toggleMarker: (id) => {
-    return {
-      type: MarkerActionTypes.TOGGLE_MARKER,
-      payload: {
-        id,
-      },
-    }
-  },
-
-  editMarker: (id, name) => {
-    return {
-      type: MarkerActionTypes.EDIT_MARKER,
-      payload: {
-        id,
-        name,
-      },
-    }
-  },
-
-  updateMarkerDraft: (marker) => {
-    return {
-      type: MarkerActionTypes.UPDATE_MARKER_DRAFT,
-      payload: {
-        marker,
-      }
-    }
-  },
-
-  startEditMarker: (id) => {
-    return {
-      type: MarkerActionTypes.START_EDIT_MARKER,
-      payload: {
-        id,
-      },
-    }
-  },
-
-  stopEditMarker: () => {
-    return {
-      type: MarkerActionTypes.STOP_EDIT_MARKER,
-      payload: {},
-    }
+export const addMarker = (marker) => ({
+  type: types.ADD_MARKER,
+  payload: {
+    marker,
   }
-}
+})
 
-export default Actions;
+export const removeMarker = (id) => ({
+  type: types.REMOVE_MARKER,
+  payload: {
+    id,
+  }
+})
+
+export const toggleMarker = (id) => ({
+  type: types.TOGGLE_MARKER,
+  payload: {
+    id,
+  }
+})
+
+export const editMarker = (id, marker) => ({
+  type: types.EDIT_MARKER,
+  payload: {
+    id,
+    marker
+  }
+})
+
+export const startEditMarker = (id) => ({
+  type: types.START_EDIT_MARKER,
+  payload: {
+    id,
+  }
+})
+
+export const toggleAllMarkers = () => ({
+  type: types.TOGGLE_ALL_MARKERS,
+  payload: {}
+})
+
+export const stopEditMarker = () => ({
+  type: types.STOP_EDIT_MARKER,
+  payload: {}
+})
