@@ -6,7 +6,8 @@ import './Map.css'
 class Map extends Component {
 
   static propTypes = {
-    markers: PropTypes.array.isRequired
+    markers: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired
   }
 
   state = {
@@ -38,15 +39,29 @@ class Map extends Component {
   }
 
   componentWillUpdate() {
-    this.state.markers.forEach(m => m.setMap(null))
+    this.state.markers.forEach(m => {
+      m.setMap(null);
+      // m.removeListener('dragend', this.handleMarkerDrag);
+    })
   }
 
   componentDidUpdate() {
-    this.state.markers.forEach(m => m.setMap(this.state.map))
+    this.state.markers.forEach(m => {
+      m.setMap(this.state.map)
+      m.addListener('dragend', (e) => {
+        const changedMarker = this.props.markers.find(marker => marker.id === m.id);
+        this.props.actions.editMarker(m.id, Object.assign({}, changedMarker, {
+          coords: {
+            lat: e.latLng.lat(),
+            lng: e.latLng.lng()
+          }
+        }))
+      })
+    })
   }
 
   convertMarkers(markers) {
-    return markers.map(marker => new window.google.maps.Marker({map: null, position: marker.coords, label: marker.name}));
+    return markers.map(marker => new window.google.maps.Marker({map: null, position: marker.coords, id: marker.id, label: marker.name, draggable: true}));
   }
 
   render() {
