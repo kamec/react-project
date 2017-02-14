@@ -3,7 +3,7 @@ import * as types from '../constants/ActionTypes'
 const markersInitialState = [{
   id: 0,
   name: 'Hello',
-  coords: {
+  position: {
     lat: 25.0,
     lng: 25.0
   },
@@ -11,7 +11,7 @@ const markersInitialState = [{
 }, {
   id: 1,
   name: 'World',
-  coords: {
+  position: {
     lat: 50.0,
     lng: 50.0
   },
@@ -25,8 +25,8 @@ function markers(state = markersInitialState, action) {
       return [...state, {
         id: state.reduce((maxId, marker) => Math.max(marker.id, maxId), -1) + 1,
         name: payload.marker.name,
-        coords: payload.marker.coords,
-        checked: false,
+        position: payload.marker.position,
+        checked: payload.marker.checked,
       }]
 
     case types.REMOVE_MARKER:

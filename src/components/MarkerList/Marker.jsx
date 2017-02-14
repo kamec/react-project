@@ -29,7 +29,6 @@ export default class Marker extends Component {
   render() {
     const {marker, toggleMarker, removeMarker} = this.props;
     let item;
-
     if (this.state.editing) {
       item = (<MarkerNameInput input={marker.name} editing={this.state.editing} onSave={(name) => this.handleSave(marker.id, name)}/>)
     } else {
@@ -41,7 +40,7 @@ export default class Marker extends Component {
           </label>
           {"\t"}
           <label>
-            ({marker.coords.lat}x{marker.coords.lng})
+            ({marker.position.lat}x{marker.position.lng})
           </label>
           <button type="button" onClick={() => {
               console.log(marker.id);

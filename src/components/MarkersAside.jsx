@@ -10,11 +10,11 @@ export default class MarkerAside extends Component {
 
   buildMarker = tokens => ({
     name: tokens[0],
-    coords: {
+    position: {
       lat: Number.parseFloat(tokens[1]) % 90 || 0.0,
       lng: Number.parseFloat(tokens[2]) % 180 || 0.0
     },
-    checked: false
+    checked: true
   });
 
   handleSave = input => {

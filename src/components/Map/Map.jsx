@@ -3,6 +3,8 @@ import MapLoader from './MapLoader'
 
 import './Map.css'
 
+const maps= window.google.maps;
+
 class Map extends Component {
 
   static propTypes = {
@@ -11,7 +13,7 @@ class Map extends Component {
   }
 
   state = {
-    markers: this.convertMarkers(this.props.markers.filter(m => m.checked)),
+    markers: this.extractMarkersFromProps(this.props),
     map: null,
     config: {
       zoom: 1,
@@ -19,54 +21,96 @@ class Map extends Component {
         lat: 0.0,
         lng: 0.0
       },
-      mapTypeId: window.google.maps.MapTypeId.TERRAIN,
+      mapTypeId: maps.MapTypeId.TERRAIN,
       mapTypeControl: false,
       streetViewControl: false
     }
   }
 
+  createResetButton(holder) {
+    const button = document.createElement('button');
+    button.innerHTML = 'Reset Map';
+    button.onclick = this.resetMap.bind(this);
+    holder.appendChild(button);
+    return button;
+  }
+
   componentDidMount() {
+    const mapHolder = document.getElementsByClassName('map')[0];
+    const map = new maps.Map(mapHolder, this.state.config);
+    map.addListener('click', this.dispatchNewMarker.bind(this));
+    map.controls[maps.ControlPosition.TOP_CENTER].push(this.createResetButton(mapHolder))
     this.setState({
-      map: new window.google.maps.Map(document.getElementsByClassName('map')[0], this.state.config),
-      markers: this.convertMarkers(this.props.markers.filter(m => m.checked))
+      map: map,
+      markers: this.extractMarkersFromProps(this.props)
     })
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    this.setState({
-      markers: this.convertMarkers(nextProps.markers.filter(m => m.checked))
-    })
+    this.setState({markers: this.extractMarkersFromProps(nextProps)})
   }
 
   componentWillUpdate() {
     this.state.markers.forEach(m => {
       m.setMap(null);
-      // m.removeListener('dragend', this.handleMarkerDrag);
     })
   }
 
   componentDidUpdate() {
     this.state.markers.forEach(m => {
       m.setMap(this.state.map)
-      m.addListener('dragend', (e) => {
-        const changedMarker = this.props.markers.find(marker => marker.id === m.id);
-        this.props.actions.editMarker(m.id, Object.assign({}, changedMarker, {
-          coords: {
-            lat: e.latLng.lat(),
-            lng: e.latLng.lng()
-          }
-        }))
-      })
+      m.addListener('dragend', this.handleMarkerDrag.bind({component: this, marker: m}))
     })
   }
 
-  convertMarkers(markers) {
-    return markers.map(marker => new window.google.maps.Marker({map: null, position: marker.coords, id: marker.id, label: marker.name, draggable: true}));
+  handleMarkerDrag(event) {
+    const {component, marker} = this;
+    const {actions, markers} = component.props;
+    const {lat, lng} = event.latLng;
+
+    const changedMarker = markers.find(m => m.id === marker.id);
+    actions.editMarker(marker.id, Object.assign({}, changedMarker, {
+      position: {
+        lat: lat(),
+        lng: lng()
+      }
+    }))
+  }
+
+  extractMarkersFromProps(props) {
+    return props.markers.filter(m => m.checked).map(m => this.convertToGMarker(m))
+  }
+
+  convertToGMarker(marker) {
+    return new maps.Marker({position: marker.position, id: marker.id, label: marker.name, draggable: true});
+  }
+
+  dispatchNewMarker(e) {
+    const {lat, lng} = e.latLng;
+    this.props.actions.addMarker(this.addNewMarker(lat(), lng()));
+  }
+
+  addNewMarker(lat, lng) {
+    return {
+      name: 'New Marker',
+      position: {
+        lat: lat,
+        lng: lng
+      },
+      checked: true
+    }
+  }
+
+  resetMap() {
+    this.state.map.setZoom(1);
+    this.state.map.panTo({lat: 0.0, lng: 0.0});
   }
 
   render() {
     return (
-      <div className='map'></div>
+      <div>
+        <div className='map'></div>
+      </div>
     )
   }
 }

@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Marker from './Marker'
+import './MarkerList.css'
 
 export default class MarkerList extends Component {
 
@@ -11,7 +12,7 @@ export default class MarkerList extends Component {
   render() {
     const {markers, actions} = this.props;
     return (
-      <ul>
+      <ul className="marker-list">
         {markers.map((marker, id) => <Marker key={marker.id} marker={marker} {...actions}/>)}
       </ul>
     )
