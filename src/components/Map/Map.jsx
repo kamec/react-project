@@ -3,7 +3,7 @@ import MapLoader from './MapLoader'
 
 import './Map.css'
 
-const maps= window.google.maps;
+const maps = window.google.maps;
 
 class Map extends Component {
 
@@ -35,13 +35,17 @@ class Map extends Component {
     return button;
   }
 
-  componentDidMount() {
+  initGMap() {
     const mapHolder = document.getElementsByClassName('map')[0];
     const map = new maps.Map(mapHolder, this.state.config);
     map.addListener('click', this.dispatchNewMarker.bind(this));
-    map.controls[maps.ControlPosition.TOP_CENTER].push(this.createResetButton(mapHolder))
+    map.controls[maps.ControlPosition.TOP_CENTER].push(this.createResetButton(mapHolder));
+    return map;
+  }
+
+  componentDidMount() {
     this.setState({
-      map: map,
+      map: this.initGMap(),
       markers: this.extractMarkersFromProps(this.props)
     })
   }
@@ -51,21 +55,20 @@ class Map extends Component {
   }
 
   componentWillUpdate() {
-    this.state.markers.forEach(m => {
-      m.setMap(null);
-    })
+    this.state.markers.forEach(m => m.setMap(null))
   }
 
   componentDidUpdate() {
     this.state.markers.forEach(m => {
       m.setMap(this.state.map)
-      m.addListener('dragend', this.handleMarkerDrag.bind({component: this, marker: m}))
+      m.addListener('dragend', (e) => {
+        this.handleMarkerDrag(m, e)
+      })
     })
   }
 
-  handleMarkerDrag(event) {
-    const {component, marker} = this;
-    const {actions, markers} = component.props;
+  handleMarkerDrag(marker, event) {
+    const {actions, markers} = this.props;
     const {lat, lng} = event.latLng;
 
     const changedMarker = markers.find(m => m.id === marker.id);
@@ -108,9 +111,7 @@ class Map extends Component {
 
   render() {
     return (
-      <div>
-        <div className='map'></div>
-      </div>
+      <div className='map'></div>
     )
   }
 }

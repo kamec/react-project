@@ -33,7 +33,7 @@ export default class MarkerNameInput extends Component {
     }
   }
 
-render(){
+  render() {
     return (
       <input
         onBlur={this.handleBlur}
