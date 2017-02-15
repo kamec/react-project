@@ -1,9 +1,10 @@
 import * as types from '../constants/ActionTypes'
 
-export const addMarker = (marker) => ({
+export const addMarker = (marker, url) => ({
     type: types.ADD_MARKER,
     payload: {
       marker,
+      promise: fetch(url)
     },
   })
 
@@ -21,11 +22,20 @@ export const toggleMarker = (id) => ({
   },
 })
 
-export const editMarker = (id, marker) => ({
-  type: types.EDIT_MARKER,
+export const editMarkerName = (id, marker) => ({
+  type: types.EDIT_MARKER_NAME,
   payload: {
     id,
     marker,
+  },
+})
+
+export const editMarkerCoords = (id, marker, url) => ({
+  type: types.EDIT_MARKER_COORDS,
+  payload: {
+    id,
+    marker,
+    promise: fetch(url)
   },
 })
 

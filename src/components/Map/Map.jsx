@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import MapLoader from './MapLoader'
 
+import {WEATHER_URL, MAP_CONFIG} from '../../constants/ActionTypes'
 import './Map.css'
 
 const maps = window.google.maps;
@@ -15,16 +16,7 @@ class Map extends Component {
   state = {
     markers: this.extractMarkersFromProps(this.props),
     map: null,
-    config: {
-      zoom: 1,
-      center: {
-        lat: 0.0,
-        lng: 0.0
-      },
-      mapTypeId: maps.MapTypeId.TERRAIN,
-      mapTypeControl: false,
-      streetViewControl: false
-    }
+    config: MAP_CONFIG
   }
 
   createResetButton(holder) {
@@ -72,12 +64,12 @@ class Map extends Component {
     const {lat, lng} = event.latLng;
 
     const changedMarker = markers.find(m => m.id === marker.id);
-    actions.editMarker(marker.id, Object.assign({}, changedMarker, {
+    actions.editMarkerCoords(marker.id, Object.assign({}, changedMarker, {
       position: {
         lat: lat(),
         lng: lng()
       }
-    }))
+    }), WEATHER_URL(lat(), lng()))
   }
 
   extractMarkersFromProps(props) {
@@ -90,7 +82,7 @@ class Map extends Component {
 
   dispatchNewMarker(e) {
     const {lat, lng} = e.latLng;
-    this.props.actions.addMarker(this.addNewMarker(lat(), lng()));
+    this.props.actions.addMarker(this.addNewMarker(lat(), lng()), WEATHER_URL(lat(), lng()));
   }
 
   addNewMarker(lat, lng) {

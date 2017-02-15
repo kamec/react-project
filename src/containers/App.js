@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react'
+import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 
@@ -7,22 +7,22 @@ import MarkersAside from '../components/MarkersAside'
 import Map from '../components/Map/Map'
 import './App.css'
 
-const App = ({markers, actions}) => (
-  <div>
-    <MarkersAside markers={markers} actions={actions}/>
-    <Map markers={markers} actions={actions}/>
-  </div>
-)
-
-App.PropTypes = {
-  markers: PropTypes.array.isRequired,
-  actions: PropTypes.object.isRequired
-}
-
 const mapStateToProps = state => ({markers: state.markers})
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators(MarkerActions, dispatch)
+  actions: bindActionCreators(MarkerActions, dispatch),
+  dispatch: dispatch
 })
+
+class App extends Component {
+  render() {
+    return (
+      <div>
+        <MarkersAside actions={this.props.actions} markers={this.props.markers}/>
+        <Map actions={this.props.actions} markers={this.props.markers}/>
+      </div>
+    )
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

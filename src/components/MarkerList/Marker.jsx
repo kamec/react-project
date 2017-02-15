@@ -4,7 +4,7 @@ import MarkerNameInput from '../MarkerNameInput'
 export default class Marker extends Component {
   static propTypes = {
     marker: PropTypes.object.isRequired,
-    editMarker: PropTypes.func.isRequired,
+    editMarkerName: PropTypes.func.isRequired,
     removeMarker: PropTypes.func.isRequired,
     toggleMarker: PropTypes.func.isRequired,
   }
@@ -21,7 +21,7 @@ export default class Marker extends Component {
     if (name.length === 0) {
       this.props.removeMarker(id)
     } else {
-      this.props.editMarker(id, Object.assign({}, this.props.marker, {name: name}))
+      this.props.editMarkerName(id, Object.assign({}, this.props.marker, {name: name}))
     }
     this.setState({editing: false})
   }
@@ -42,10 +42,7 @@ export default class Marker extends Component {
           <label>
             ({marker.position.lat}x{marker.position.lng})
           </label>
-          <button type="button" onClick={() => {
-              console.log(marker.id);
-              removeMarker(marker.id)
-          }}>x</button>
+          <button type="button" onClick={() => removeMarker(marker.id)}>x</button>
         </div>
       )
     }

@@ -1,4 +1,6 @@
 import React, {PropTypes, Component} from 'react'
+
+import {WEATHER_URL} from '../constants/ActionTypes'
 import MarkerNameInput from './MarkerNameInput'
 import MarkerList from './MarkerList/MarkerList'
 
@@ -11,8 +13,8 @@ export default class MarkerAside extends Component {
   buildMarker = tokens => ({
     name: tokens[0],
     position: {
-      lat: Number.parseFloat(tokens[1]) % 90 || 0.0,
-      lng: Number.parseFloat(tokens[2]) % 180 || 0.0
+      lat: tokens[1],
+      lng: tokens[2]
     },
     checked: true
   });
@@ -22,7 +24,9 @@ export default class MarkerAside extends Component {
     if (tokens.length !== 3) {
       return;
     }
-    this.props.actions.addMarker(this.buildMarker(tokens))
+    tokens[1] = Number.parseFloat(tokens[1]) % 90 || 0.0
+    tokens[2] = Number.parseFloat(tokens[2]) % 180 || 0.0
+    this.props.actions.addMarker(this.buildMarker(tokens), WEATHER_URL(tokens[1], tokens[2]))
   }
 
   render() {

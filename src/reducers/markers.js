@@ -22,17 +22,21 @@ function markers(state = markersInitialState, action) {
   const payload = action.payload;
   switch (action.type) {
     case types.ADD_MARKER:
+      console.log(payload.weatherData);
+      const { name, position, checked } = payload.marker;
       return [...state, {
         id: state.reduce((maxId, marker) => Math.max(marker.id, maxId), -1) + 1,
-        name: payload.marker.name,
-        position: payload.marker.position,
-        checked: payload.marker.checked,
+        name,
+        position,
+        checked,
+        weatherData: payload.weatherData
       }]
 
     case types.REMOVE_MARKER:
       return state.filter(marker => marker.id !== payload.id)
 
-    case types.EDIT_MARKER:
+    case types.EDIT_MARKER_COORDS:
+    case types.EDIT_MARKER_NAME:
       return state.map(marker => marker.id === payload.marker.id ? Object.assign({}, marker, payload.marker) : marker)
 
     case types.TOGGLE_MARKER:
