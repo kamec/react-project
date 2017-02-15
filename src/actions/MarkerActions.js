@@ -1,12 +1,11 @@
-import * as types from '../constants/ActionTypes'
+import * as types from '../constants/constants'
 
-export const addMarker = (marker, url) => ({
-    type: types.ADD_MARKER,
-    payload: {
-      marker,
-      promise: fetch(url)
-    },
-  })
+export const addMarker = (marker) => ({
+  type: types.ADD_MARKER,
+  payload: {
+    marker,
+  },
+})
 
 export const removeMarker = (id) => ({
   type: types.REMOVE_MARKER,
@@ -35,7 +34,6 @@ export const editMarkerCoords = (id, marker, url) => ({
   payload: {
     id,
     marker,
-    promise: fetch(url)
   },
 })
 

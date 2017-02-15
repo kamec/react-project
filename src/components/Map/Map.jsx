@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import MapLoader from './MapLoader'
 
-import {WEATHER_URL, MAP_CONFIG} from '../../constants/ActionTypes'
+import {MAP_CONFIG} from '../../constants/constants'
 import './Map.css'
 
 const maps = window.google.maps;
@@ -69,7 +69,7 @@ class Map extends Component {
         lat: lat(),
         lng: lng()
       }
-    }), WEATHER_URL(lat(), lng()))
+    }))
   }
 
   extractMarkersFromProps(props) {
@@ -82,7 +82,7 @@ class Map extends Component {
 
   dispatchNewMarker(e) {
     const {lat, lng} = e.latLng;
-    this.props.actions.addMarker(this.addNewMarker(lat(), lng()), WEATHER_URL(lat(), lng()));
+    this.props.actions.addMarker(this.addNewMarker(lat(), lng()));
   }
 
   addNewMarker(lat, lng) {
