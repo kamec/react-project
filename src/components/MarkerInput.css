@@ -13,3 +13,12 @@
     font-size: 1.1rem;
     padding-left: 0.3rem;
 }
+
+.marker-list .marker-input {
+  border: none;
+  background: none;
+  color: #464547;
+  margin: 0;
+  padding: 0;
+  padding-left: 1.2rem;
+}

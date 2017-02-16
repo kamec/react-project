@@ -35,7 +35,7 @@ export default class Marker extends Component {
     const {marker, toggleMarker, removeMarker} = this.props;
     let item;
     if (this.state.editing) {
-      item = (<MarkerInput input={marker.name} editing={this.state.editing} onSave={(name) => this.handleSave(marker.id, name)}/>)
+      item = (<MarkerInput className="marker-name-editor" input={marker.name} editing={this.state.editing} onSave={(name) => this.handleSave(marker.id, name)}/>)
     } else {
       item = (
         <div className="marker">
