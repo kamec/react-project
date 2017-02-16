@@ -1,15 +1,5 @@
 .map {
-    position: relative;
-    width: 500px;
-    height: 500px;
-    border: 1px solid black;
-}
-
-.marker {
-    width: 20px;
-    height: 20px;
-    background: red;
-    position: absolute;
-    transform: translate(-10px, -10px);
-    border-radius: 50%;
+  height: 500px;
+  width: 500px;
+  margin: auto;
 }

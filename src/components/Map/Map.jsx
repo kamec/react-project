@@ -1,87 +1,111 @@
-import React, {Component} from 'react';
-import MapStore from '../../stores/MapStore';
-import ListActions from '../../actions/ListActions';
+import React, {Component, PropTypes} from 'react'
+import MapLoader from './MapLoader'
 
-import './Map.css';
+import {MAP_CONFIG} from '../../constants/constants'
+import './Map.css'
+
+const maps = window.google.maps;
 
 class Map extends Component {
 
-  componentWillMount() {
-    this.state = {
-      marker: null
-    };
+  static propTypes = {
+    markers: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired
   }
 
-  onMapClick = (event) => {
-    ListActions.addItem({id: Date.now(), name: 'new point', lat: event.latLng.lat(), lng: event.latLng.lng()});
+  state = {
+    markers: this.extractMarkersFromProps(this.props),
+    map: null,
+    config: MAP_CONFIG
+  }
+
+  createResetButton(holder) {
+    const button = document.createElement('button');
+    button.innerHTML = 'Reset Map';
+    button.onclick = this.resetMap.bind(this);
+    holder.appendChild(button);
+    return button;
+  }
+
+  initGMap() {
+    const mapHolder = document.getElementsByClassName('map')[0];
+    const map = new maps.Map(mapHolder, this.state.config);
+    map.addListener('click', this.dispatchNewMarker.bind(this));
+    map.controls[maps.ControlPosition.TOP_CENTER].push(this.createResetButton(mapHolder));
+    return map;
   }
 
   componentDidMount() {
-    MapStore.addChangeListener(this.onChange);
-    this.map = this.getNewMap(this.props.initialPosition, 4);
-    this.map.addListener('click', this.onMapClick.bind(this));
+    this.setState({
+      map: this.initGMap(),
+      markers: this.extractMarkersFromProps(this.props)
+    })
   }
 
-  componentWillUnmount() {
-    MapStore.removeChangeListener(this.onChange);
+  componentWillReceiveProps(nextProps, nextState) {
+    this.setState({markers: this.extractMarkersFromProps(nextProps)})
   }
 
-  onChange = () => {
-    this.setState({marker: MapStore.marker})
+  componentWillUpdate() {
+    this.state.markers.forEach(m => m.setMap(null))
   }
 
-  getNewMap = (center, zoom) => {
-    return new window.google.maps.Map(this.refs.map, {
-      center,
-      scrollwheel: true,
-      zoom,
-      mapTypeControl: false,
-      streetViewControl: false
-    });
+  componentDidUpdate() {
+    this.state.markers.forEach(m => {
+      m.setMap(this.state.map)
+      m.addListener('dragend', (e) => {
+        this.handleMarkerDrag(m, e)
+      })
+    })
   }
 
-  setMarker = (marker) => {
-    const {lat, lng} = this.state.marker;
-    new window.google.maps.Marker({
-      map: this.map,
+  handleMarkerDrag(marker, event) {
+    const {actions, markers} = this.props;
+    const {lat, lng} = event.latLng;
+
+    const changedMarker = markers.find(m => m.id === marker.id);
+    actions.editMarkerCoords(marker.id, Object.assign({}, changedMarker, {
       position: {
-        lat,
-        lng
+        lat: lat(),
+        lng: lng()
+      }
+    }))
+  }
+
+  extractMarkersFromProps(props) {
+    return props.markers.filter(m => m.checked).map(m => this.convertToGMarker(m))
+  }
+
+  convertToGMarker(marker) {
+    return new maps.Marker({position: marker.position, id: marker.id, label: marker.name, draggable: true});
+  }
+
+  dispatchNewMarker(e) {
+    const {lat, lng} = e.latLng;
+    this.props.actions.addMarker(this.addNewMarker(lat(), lng()));
+  }
+
+  addNewMarker(lat, lng) {
+    return {
+      name: 'New Marker',
+      position: {
+        lat: lat,
+        lng: lng
       },
-      label: this.state.marker.name,
-      draggable: true
-    });
+      checked: true
+    }
   }
 
-  renderMarker() {
-    const {lat, lng} = this.state.marker;
-    this.map = this.getNewMap({
-      lat,
-      lng
-    }, 4);
-    this.setMarker(this.state.marker);
-  }
-
-  showLoadingIcon = () => {
-    return (
-      <object type="%PUBLIC_URL%/loading.svg" data="loading.svg" className="loading"></object>
-    )
+  resetMap() {
+    this.state.map.setZoom(1);
+    this.state.map.panTo({lat: 0.0, lng: 0.0});
   }
 
   render() {
     return (
-      <div>
-        <div className="map" ref="map">
-          {window.google
-            ? this.showLoadingIcon()
-            : null}
-          {this.state.marker
-            ? this.renderMarker()
-            : null}
-        </div>
-      </div>
+      <div className='map'></div>
     )
   }
 }
 
-export default Map;
+export default MapLoader(Map);
