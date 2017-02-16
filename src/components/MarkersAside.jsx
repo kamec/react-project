@@ -6,10 +6,12 @@ import MarkerList from './MarkerList/MarkerList'
 export default class MarkerAside extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
-    markers: PropTypes.array.isRequired
+    fetchActions: PropTypes.object.isRequired,
+    markers: PropTypes.array.isRequired,
+    dispatch: PropTypes.func.isRequired,
   }
 
-  buildMarker = tokens => ({
+  createMarker = tokens => ({
     name: tokens[0],
     position: {
       lat: tokens[1],
@@ -25,7 +27,7 @@ export default class MarkerAside extends Component {
     }
     tokens[1] = Number.parseFloat(tokens[1]) % 90 || 0.0;
     tokens[2] = Number.parseFloat(tokens[2]) % 180 || 0.0;
-    this.props.actions.addMarker(this.buildMarker(tokens));
+    this.props.actions.addMarker(this.createMarker(tokens));
   }
 
   render() {
@@ -33,7 +35,7 @@ export default class MarkerAside extends Component {
       <aside className="markers-aside">
         <h1>Markers</h1>
         <MarkerNameInput onSave={this.handleSave} placeholder="Marker name lat lng" newMarker/>
-        <MarkerList actions={this.props.actions} markers={this.props.markers}/>
+        <MarkerList {...this.props}/>
       </aside>
     )
   }

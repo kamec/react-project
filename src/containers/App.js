@@ -8,18 +8,19 @@ import MarkersAside from '../components/MarkersAside'
 import Map from '../components/Map/Map'
 import './App.css'
 
-const mapStateToProps = state => ({markers: state.markers, weatherData: state.weatherData})
+const mapStateToProps = state => ({markers: state.markers, quakesData: state.quakesData})
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(MarkerActions, dispatch),
-  fetchActions: bindActionCreators(FetchActions, dispatch)
+  fetchActions: bindActionCreators(FetchActions, dispatch),
+  dispatch
 })
 
 class App extends Component {
   render() {
     return (
       <div>
-        <MarkersAside actions={this.props.actions} markers={this.props.markers}/>
+        <MarkersAside {...this.props}/>
         <Map actions={this.props.actions} markers={this.props.markers}/>
       </div>
     )

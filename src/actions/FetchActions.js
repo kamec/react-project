@@ -1,40 +1,55 @@
 import * as types from '../constants/constants'
+import { EARTQUAKE_URL } from '../constants/constants'
 
-const extractWeatherData = response => ({
-  weather: response.weather.pop(),
-  cloudsPercentage: response.clouds.all,
-  wind: response.wind,
-  main: response.main
-})
-
-export const requestWeatherData = (marker) => ({
-  type: types.REQEST_WEATHER_DATA,
+export const invalidateData = marker => ({
+  type: types.INVALIDATE_DATA,
   payload: {
-    marker,
-  },
+    marker
+  }
 })
 
-export const receiveWeatherData = (marker, json) => ({
-  type: types.RECEIVE_WEATHER_DATA,
-  payload: {
-    marker,
-    weatherData: extractWeatherData(json),
-    receivedAt: Date.now(),
-  },
-})
-
-export const requestEarthquakeData = (marker) => ({
+export const requestQuakesData = (marker) => ({
   type: types.REQUEST_EARTHQUAKES_DATA,
   payload: {
     marker,
   },
 })
 
-export const reseiveEarthquakeData = (marker, json) => ({
+export const receiveQuakesData = (marker, json) => ({
   type: types.RECEIVE_EARTHQUAKES_DATA,
   payload: {
     marker,
-    nearestQuakes: json,
+    quakesData: json,
     receivedAt: Date.now(),
   },
 })
+
+const fetchQuakesData = (marker) => (dispatch) => {
+  dispatch(requestQuakesData(marker));
+  return fetch(EARTQUAKE_URL(marker.position.lat, marker.position.lng))
+    .then(rawResponse => rawResponse.json())
+    .then(json => dispatch(receiveQuakesData(marker, json)));
+}
+
+const HOUR = 3600 * 1000;
+
+const tooFrequent = (lastUpdate) => (Date.now() - lastUpdate) < HOUR;
+
+const shouldFetchData = (state, marker) => {
+  const data = state.quakesData.find(data => data.id === marker.id);
+  if (data.didInvalidate && !data.isFetching) {
+    return true
+  }
+
+  if (data.isFetching || tooFrequent(data.lastUpdate)) {
+    return false
+  }
+
+  return false
+}
+
+export const fetchDataIfNeeded = marker => (dispatch, getState) => {
+  if (shouldFetchData(getState(), marker)) {
+    dispatch(fetchQuakesData(marker))
+  }
+}

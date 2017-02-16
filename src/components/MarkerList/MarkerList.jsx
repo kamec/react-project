@@ -3,17 +3,18 @@ import Marker from './Marker'
 import './MarkerList.css'
 
 export default class MarkerList extends Component {
-
   static propTypes = {
     actions: PropTypes.object.isRequired,
+    fetchActions: PropTypes.object.isRequired,
     markers: PropTypes.array.isRequired,
+    dispatch: PropTypes.func.isRequired
   }
 
   render() {
-    const {markers, actions} = this.props;
+    const {markers, actions, fetchActions} = this.props;
     return (
       <ul className="marker-list">
-        {markers.map((marker, id) => <Marker key={marker.id} marker={marker} {...actions}/>)}
+        {markers.map((marker, id) => <Marker key={marker.id} marker={marker} {...actions} {...fetchActions}/>)}
       </ul>
     )
   }
