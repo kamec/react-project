@@ -15,8 +15,9 @@ export const requestQuakesData = (marker) => ({
   },
 })
 
-export const receiveQuakesData = (marker, json) => ({
+export const receiveQuakesData = (marker, json, status) => ({
   type: types.RECEIVE_EARTHQUAKES_DATA,
+  status,
   payload: {
     marker,
     quakesData: json,
@@ -27,22 +28,20 @@ export const receiveQuakesData = (marker, json) => ({
 const fetchQuakesData = (marker) => (dispatch) => {
   dispatch(requestQuakesData(marker));
   return fetch(EARTQUAKE_URL(marker.position.lat, marker.position.lng))
-    .then(rawResponse => rawResponse.json())
-    .then(json => dispatch(receiveQuakesData(marker, json)));
+    .then(rawResponse => {
+      if (rawResponse.status === 200) {
+        return rawResponse.json()
+      }
+      throw new Error(rawResponse.status + ' : ' + rawResponse.statusText)
+    })
+    .then(json => dispatch(receiveQuakesData(marker, json, 'succsess')))
+    .catch(error => dispatch(receiveQuakesData(marker, {}, 'failed')));
 }
-
-const HOUR = 3600 * 1000;
-
-const tooFrequent = (lastUpdate) => (Date.now() - lastUpdate) < HOUR;
 
 const shouldFetchData = (state, marker) => {
   const data = state.quakesData.find(data => data.id === marker.id);
-  if (data.didInvalidate && !data.isFetching) {
+  if (data.didInvalidate) {
     return true
-  }
-
-  if (data.isFetching || tooFrequent(data.lastUpdate)) {
-    return false
   }
 
   return false

@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import MapLoader from './MapLoader'
 
-import {MAP_CONFIG} from '../../constants/constants'
+import {MAP_CONFIG, QUAKE_STYLE} from '../../constants/constants'
 import './Map.css'
 
 const maps = window.google.maps;
@@ -10,7 +10,9 @@ class Map extends Component {
 
   static propTypes = {
     markers: PropTypes.array.isRequired,
-    actions: PropTypes.object.isRequired
+    quakesData: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired,
+    fetchActions: PropTypes.object.isRequired
   }
 
   state = {
@@ -30,6 +32,7 @@ class Map extends Component {
   initGMap() {
     const mapHolder = document.getElementsByClassName('map')[0];
     const map = new maps.Map(mapHolder, this.state.config);
+    map.data.setStyle(QUAKE_STYLE);
     map.addListener('click', this.dispatchNewMarker.bind(this));
     map.controls[maps.ControlPosition.TOP_CENTER].push(this.createResetButton(mapHolder));
     return map;
@@ -48,9 +51,18 @@ class Map extends Component {
 
   componentWillUpdate() {
     this.state.markers.forEach(m => m.setMap(null))
+    if (this.state.map) {
+      this.state.map.data.forEach(feature => this.state.map.data.remove(feature));
+    }
+  }
+
+  filterValidQuakes(quakes, markers) {
+    return markers.some(marker => marker.id === quakes.id) && quakes.quakesData.type === "FeatureCollection";
   }
 
   componentDidUpdate() {
+    this.props.quakesData.filter(quakes => this.filterValidQuakes(quakes, this.state.markers))
+    .forEach(quake => this.state.map.data.addGeoJson(quake.quakesData));
     this.state.markers.forEach(m => {
       m.setMap(this.state.map)
       m.addListener('dragend', (e) => {
@@ -60,16 +72,13 @@ class Map extends Component {
   }
 
   handleMarkerDrag(marker, event) {
-    const {actions, markers} = this.props;
+    const {actions, fetchActions, markers} = this.props;
     const {lat, lng} = event.latLng;
 
     const changedMarker = markers.find(m => m.id === marker.id);
-    actions.editMarkerCoords(marker.id, Object.assign({}, changedMarker, {
-      position: {
-        lat: lat(),
-        lng: lng()
-      }
-    }))
+    const newMarker = Object.assign({}, changedMarker, { position: { lat: lat(), lng: lng() } })
+    actions.editMarkerCoords(marker.id, newMarker)
+    fetchActions.fetchDataIfNeeded(newMarker);
   }
 
   extractMarkersFromProps(props) {

@@ -21,7 +21,7 @@ class App extends Component {
     return (
       <div>
         <MarkersAside {...this.props}/>
-        <Map actions={this.props.actions} markers={this.props.markers}/>
+        <Map {...this.props}/>
       </div>
     )
   }
