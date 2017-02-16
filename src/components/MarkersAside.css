@@ -1,0 +1,17 @@
+.markers-aside {
+    display: flex;
+    padding-right: 2.5rem;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    max-width: 23rem;
+    min-width: 23rem;
+    max-height: 34.5rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.markers-aside h1 {
+  color: #464547;
+  padding: 0;
+  margin: 0;
+}

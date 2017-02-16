@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
+import './MarkerInput.css'
 
-export default class MarkerNameInput extends Component {
+export default class MarkerInput extends Component {
   static propTypes = {
     editing: PropTypes.bool,
     input: PropTypes.string,
@@ -36,6 +37,7 @@ export default class MarkerNameInput extends Component {
   render() {
     return (
       <input
+        className="marker-input"
         onBlur={this.handleBlur}
         onChange={this.handleChange}
         onKeyDown={this.handleSubmit}

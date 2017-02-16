@@ -1,0 +1,15 @@
+.marker-input {
+    border: 2px solid #7F993A;
+    background-color: #fff;
+    color: #464547;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-family: 'Oswald', sans-serif;
+}
+
+.marker-input::placeholder {
+    color: #464547;
+    font-size: 1.1rem;
+    padding-left: 0.3rem;
+}

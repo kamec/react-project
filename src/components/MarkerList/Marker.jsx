@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
-import MarkerNameInput from '../MarkerNameInput'
+import MarkerInput from '../MarkerInput'
+import './Marker.css'
 
 export default class Marker extends Component {
   static propTypes = {
@@ -7,8 +8,6 @@ export default class Marker extends Component {
     editMarkerName: PropTypes.func.isRequired,
     removeMarker: PropTypes.func.isRequired,
     toggleMarker: PropTypes.func.isRequired,
-    invalidateData: PropTypes.func.isRequired,
-    fetchDataIfNeeded: PropTypes.func.isRequired
   }
 
   state = {
@@ -33,22 +32,22 @@ export default class Marker extends Component {
   }
 
   render() {
-    const {marker, toggleMarker, removeMarker, invalidateData, fetchDataIfNeeded} = this.props;
+    const {marker, toggleMarker, removeMarker} = this.props;
     let item;
     if (this.state.editing) {
-      item = (<MarkerNameInput input={marker.name} editing={this.state.editing} onSave={(name) => this.handleSave(marker.id, name)}/>)
+      item = (<MarkerInput input={marker.name} editing={this.state.editing} onSave={(name) => this.handleSave(marker.id, name)}/>)
     } else {
       item = (
-        <div>
-          <input type="checkbox" checked={marker.checked} onChange={() => toggleMarker(marker.id)}/>
-          <label onDoubleClick={this.handleDoubleClick}> {marker.name} </label>
+        <div className="marker">
+          <input className="marker-checked-input" type="checkbox" checked={marker.checked} onChange={() => toggleMarker(marker.id)}/>
+          <label className="marker-name label" onDoubleClick={this.handleDoubleClick}>
+            {marker.name}
+          </label>
           {"\t"}
-          <label> ({marker.position.lat}x{marker.position.lng}) </label>
-          <button type="button" onClick={() => {
-              invalidateData(marker);
-              fetchDataIfNeeded(marker);
-            }}>Refresh</button>
-          <button type="button" onClick={() => removeMarker(marker.id)}>x</button>
+          <label className="marker-position label">
+            ({marker.position.lat.toFixed(3)}x{marker.position.lng.toFixed(3)})
+          </label>
+          <button className="marker-remove button" type="button" onClick={() => removeMarker(marker.id)}>x</button>
         </div>
       )
     }

@@ -1,7 +1,8 @@
 import React, {PropTypes, Component} from 'react'
 
-import MarkerNameInput from './MarkerNameInput'
+import MarkerInput from './MarkerInput'
 import MarkerList from './MarkerList/MarkerList'
+import './MarkersAside.css'
 
 export default class MarkerAside extends Component {
   static propTypes = {
@@ -34,7 +35,7 @@ export default class MarkerAside extends Component {
     return (
       <aside className="markers-aside">
         <h1>Markers</h1>
-        <MarkerNameInput onSave={this.handleSave} placeholder="Marker name lat lng" newMarker/>
+        <MarkerInput onSave={this.handleSave} placeholder="Name lat lng" newMarker/>
         <MarkerList {...this.props}/>
       </aside>
     )

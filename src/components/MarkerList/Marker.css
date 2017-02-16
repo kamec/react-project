@@ -1,0 +1,17 @@
+.marker {
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+
+.marker .marker-name.label {
+  overflow: hidden;
+  margin-right: auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

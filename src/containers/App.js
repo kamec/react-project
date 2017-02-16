@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
 class App extends Component {
   render() {
     return (
-      <div>
+      <div className="app">
         <MarkersAside {...this.props}/>
         <Map {...this.props}/>
       </div>

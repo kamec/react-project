@@ -1,5 +1,5 @@
 .map {
-  height: 500px;
-  width: 500px;
-  margin: auto;
+  height: 34.5rem;
+  width: 34.5rem;
+  flex-grow: 2;
 }

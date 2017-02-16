@@ -1,4 +1,12 @@
 .marker-list {
-  height: 100px;
   overflow: auto;
+  font-weight: 300;
+  font-size: 1.1rem;
+}
+
+.marker-list li:nth-child(odd) {
+  background-color: #39C2D7;
+}
+.marker-list li:nth-child(even) {
+  background-color: #1A9CB0;
 }
