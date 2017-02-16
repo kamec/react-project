@@ -8,7 +8,7 @@ const maps = window.google.maps;
 
 class Map extends Component {
 
-  static propTypes = {
+  static propTypes = { // проверка типа пропсов
     markers: PropTypes.array.isRequired,
     quakesData: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired,
@@ -25,7 +25,7 @@ class Map extends Component {
     const button = document.createElement('button');
     button.innerHTML = 'Reset Map';
     button.onclick = this.resetMap.bind(this);
-    holder.appendChild(button);
+    holder.appendChild(button); // пробрасываем в дом
     return button;
   }
 
@@ -45,18 +45,18 @@ class Map extends Component {
     })
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
+  componentWillReceiveProps(nextProps) {
     this.setState({markers: this.extractMarkersFromProps(nextProps)})
   }
 
   componentWillUpdate() {
     this.state.markers.forEach(m => m.setMap(null))
     if (this.state.map) {
-      this.state.map.data.forEach(feature => this.state.map.data.remove(feature));
+      this.state.map.data.forEach(feature => this.state.map.data.remove(feature)); // удаление землетрясений
     }
   }
 
-  filterValidQuakes(quakes, markers) {
+  filterValidQuakes(quakes, markers) { // выбираем землетрясения чекнутых маркеров
     return markers.some(marker => marker.id === quakes.id) && quakes.quakesData.type === "FeatureCollection";
   }
 
@@ -71,8 +71,8 @@ class Map extends Component {
     })
   }
 
-  handleMarkerDrag(marker, event) {
-    const {actions, fetchActions, markers} = this.props;
+  handleMarkerDrag(marker, event) { // обработчик
+    const {actions, fetchActions, markers} = this.props; // деструктуризация - выдергиваем поля this.props.actions и тд
     const {lat, lng} = event.latLng;
 
     const changedMarker = markers.find(m => m.id === marker.id);

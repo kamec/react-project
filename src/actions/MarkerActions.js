@@ -36,8 +36,3 @@ export const editMarkerCoords = (id, marker, url) => ({
     marker,
   },
 })
-
-export const toggleAllMarkers = () => ({
-  type: types.TOGGLE_ALL_MARKERS,
-  payload: {},
-})

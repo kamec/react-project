@@ -11,7 +11,7 @@ import './index.css'
 let store = createStore(reducer, applyMiddleware(thunk));
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={store}> // делает стор доступным дочерним компонентам
     <App/>
   </Provider >,
   document.getElementById('root'));

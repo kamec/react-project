@@ -24,7 +24,7 @@ export default class MarkerInput extends Component {
     }
   }
 
-  handleChange = e => {
+  handleChange = e => { // обработка изменений
     this.setState({input: e.target.value})
   }
 

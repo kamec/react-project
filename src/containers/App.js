@@ -11,7 +11,7 @@ import './App.css'
 const mapStateToProps = state => ({markers: state.markers, quakesData: state.quakesData})
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators(MarkerActions, dispatch),
+  actions: bindActionCreators(MarkerActions, dispatch), // оборачивает вызов Dispatch(action)
   fetchActions: bindActionCreators(FetchActions, dispatch),
   dispatch
 })
@@ -27,4 +27,4 @@ class App extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App); // преобразование получаемого Redux.store в React.props

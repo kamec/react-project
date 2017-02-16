@@ -3,17 +3,17 @@ import * as types from '../constants/constants'
 class QuakesData {
   constructor(id) {
     this.id = id;
-    this.didInvalidate = true;
-    this.isFetching = false;
+    this.didInvalidate = true; // нужно ли загрузить новые данные
+    this.isFetching = false; // в процессе обновления
     this.lastUpdate = 0;
-    this.quakesData = {};
+    this.quakesData = {}; // данные
   }
 }
 
 
 const HOUR = 3600 * 1000;
 
-const tooFrequent = (lastUpdate) => (Date.now() - lastUpdate) < HOUR;
+const tooFrequent = (lastUpdate) => (Date.now() - lastUpdate) < HOUR; // слишком часто
 
 const getNextId = state => state.reduce((maxId, data) => Math.max(data.id, maxId), -1) + 1;
 
@@ -27,13 +27,13 @@ function quakesData(state = initialState, action) {
         didInvalidate: !data.isFetching && !tooFrequent(data.lastUpdate)
       }) : data);
 
-    case types.REQUEST_EARTHQUAKES_DATA:
+    case types.REQUEST_EARTHQUAKES_DATA: // запрос
       return state.map(data => (data.id === payload.marker.id) ? Object.assign({}, data, {
         isFetching: true,
         didInvalidate: false
       }) : data);
 
-    case types.RECEIVE_EARTHQUAKES_DATA:
+    case types.RECEIVE_EARTHQUAKES_DATA: // получение
       if (action.status === 'succsess') {
         return state.map(data => (data.id === payload.marker.id) ? Object.assign({}, data, {
           isFetching: false,
@@ -45,7 +45,7 @@ function quakesData(state = initialState, action) {
           didInvalidate: true,
           isFetching: false,
           quakesData: payload.quakesData
-          
+
         }) : data);
       }
 
