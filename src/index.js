@@ -1,4 +1,4 @@
-import React from 'react' // точки с запятыми как вариант конечно
+import React from 'react' 
 import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
 import thunk  from 'redux-thunk'
@@ -8,9 +8,8 @@ import App from './containers/App'
 import reducer from './reducers/reducer'
 import './index.css'
 
-let store = createStore(reducer, applyMiddleware(thunk)); // why let?
+let store = createStore(reducer, applyMiddleware(thunk)); 
 
-// делает стор доступным дочерним компонентам
 ReactDOM.render(
   <Provider store={store}> 
     <App/>
