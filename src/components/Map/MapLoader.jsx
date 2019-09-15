@@ -1,14 +1,13 @@
-import React, {Component} from 'react'
-import './MapLoader.css'
+import React from 'react';
+import './MapLoader.css';
 
-const MapLoader = (WrappedComponent) => {
-  return class MapLoader extends Component {
-    render() {
-      return window.google
-        ? <WrappedComponent {...this.props}/>
-        : <div className='loader'></div>
-    }
-  }
+const loader = WrappedComponent => {
+  const MapLoader = props => window.google
+    ? <WrappedComponent {...props} />
+    : <div className='loader' />;
+
+  return MapLoader;
 }
 
-export default MapLoader;
+
+export default loader;

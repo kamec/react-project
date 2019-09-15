@@ -1,21 +1,20 @@
-import * as types from '../constants/constants'
-import { EARTQUAKE_URL } from '../constants/constants'
+import * as types from '../constants/constants';
 
-export const invalidateData = marker => ({ // нужно обновить
+export const invalidateData = marker => ({ 
   type: types.INVALIDATE_DATA,
   payload: {
     marker
   }
 })
 
-export const requestQuakesData = marker => ({ // в процессе обновления
+export const requestQuakesData = marker => ({
   type: types.REQUEST_EARTHQUAKES_DATA,
   payload: {
     marker,
   },
 })
 
-export const receiveQuakesData = (marker, json, status) => ({ // обновлено
+export const receiveQuakesData = (marker, json, status) => ({ 
   type: types.RECEIVE_EARTHQUAKES_DATA,
   status,
   payload: {
@@ -25,21 +24,21 @@ export const receiveQuakesData = (marker, json, status) => ({ // обновле�
   },
 })
 
-const fetchQuakesData = (marker) => (dispatch) => { // то, что в thunk - произвести запрос
-  dispatch(requestQuakesData(marker)); //переводит state в состояние обновления данных
-  return fetch(EARTQUAKE_URL(marker.position.lat, marker.position.lng))
-    .then(rawResponse => { // http-ответ
-      if (rawResponse.status === 200) { // статус ок
+const fetchQuakesData = (marker) => (dispatch) => { 
+  dispatch(requestQuakesData(marker)); 
+  return fetch(types.EARTQUAKE_URL(marker.position.lat, marker.position.lng))
+    .then(rawResponse => { 
+      if (rawResponse.status === 200) { 
         return rawResponse.json()
       }
       throw new Error()
     })
     .then(json => dispatch(receiveQuakesData(marker, json, 'succsess')))
-    .catch(error => dispatch(receiveQuakesData(marker, {}, 'failed')));
+    .catch(() => dispatch(receiveQuakesData(marker, {}, 'failed')));
 }
 
 const shouldFetchData = (state, marker) => {
-  const data = state.quakesData.find(data => data.id === marker.id);
+  const data = state.quakesData.find(({id}) => id === marker.id);
   return data.didInvalidate;
 }
 
