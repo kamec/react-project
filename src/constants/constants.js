@@ -29,8 +29,7 @@ export const MAP_CONFIG = {
 
 const interpolateHsl = (lowHsl, highHsl, fraction) => {
   const color = [];
-  for (let i = 0; i < 3; i++) {
-    // Calculate color based on the fraction.
+  for (let i = 0; i < 3; i+=1) {
     color[i] = (highHsl[i] - lowHsl[i]) * fraction + lowHsl[i];
   }
   return `hsl(${color[0]},${color[1]}%,${color[2]}%)`;
@@ -55,7 +54,7 @@ export const QUAKE_STYLE = (feature) => {
       fillColor: color,
       fillOpacity: 2 / feature.getProperty('mag'),
       // while an exponent would technically be correct, quadratic looks nicer
-      scale: Math.pow(feature.getProperty('mag'), 2)
+      scale: (feature.getProperty('mag')**2)
     },
     zIndex: Math.floor(feature.getProperty('mag'))
   };
