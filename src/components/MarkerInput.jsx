@@ -1,51 +1,64 @@
-import React, {Component} from 'react'
-import PropTypes from "prop-types" 
-import './MarkerInput.css'
+import React, { Component } from 'react';
+import PropTypes from "prop-types";
+import './MarkerInput.css';
 
 export default class MarkerInput extends Component {
-  static propTypes = {
-    editing: PropTypes.bool,
-    input: PropTypes.string,
-    newMarker: PropTypes.bool,
-    onSave: PropTypes.func.isRequired,
-    placeholder: PropTypes.string,
-  }
 
-  state = {
-    input: this.props.input || ''
+  constructor(props) {
+    super(props);
+    const { input } = this.props;
+    this.state = {
+      input
+    }
   }
 
   handleSubmit = e => {
     const ENTER_BUTTON_CODE = 13;
     if (e.which === ENTER_BUTTON_CODE) {
-      this.props.onSave(this.state.input);
-      if (this.props.newMarker) {
-        this.setState({input: ''})
+      const { input } = this.state;
+      const { newMarker, onSave } = this.props;
+      onSave(input);
+      if (newMarker) {
+        this.setState({ input: '' });
       }
     }
   }
 
-  handleChange = e => { // обработка изменений
-    this.setState({input: e.target.value})
+  handleChange = e => { 
+    this.setState({ input: e.target.value })
   }
 
   handleBlur = e => {
-    if (!this.props.newMarker) {
-      this.props.onSave(e.target.value)
+    const { newMarker, onSave } = this.props;
+    if (!newMarker) {
+      onSave(e.target.value);
     }
   }
 
   render() {
+    const { input } = this.state;
+    const { placeholder} = this.props;
     return (
       <input
         className="marker-input"
         onBlur={this.handleBlur}
         onChange={this.handleChange}
         onKeyDown={this.handleSubmit}
-        placeholder={this.props.placeholder}
+        placeholder={placeholder}
         type='text'
-        value={this.state.input}
+        value={input}
       />
     )
   }
+}
+
+MarkerInput.propTypes = {
+  input: PropTypes.string,
+  newMarker: PropTypes.bool.isRequired,
+  onSave: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+}
+MarkerInput.defaultProps = {
+  input: '',
+  placeholder: '',
 }

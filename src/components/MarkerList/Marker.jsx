@@ -1,53 +1,59 @@
-import React, {Component} from 'react'
-import PropTypes from "prop-types" 
+import React, { Component } from 'react'
+import PropTypes from "prop-types"
 import MarkerInput from '../MarkerInput'
 import './Marker.css'
 
 export default class Marker extends Component {
-  static propTypes = {
-    marker: PropTypes.object.isRequired,
-    editMarkerName: PropTypes.func.isRequired,
-    removeMarker: PropTypes.func.isRequired,
-    toggleMarker: PropTypes.func.isRequired,
-  }
 
-  state = {
-    editing: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      editing: false
+    }
   }
 
   componentDidMount() {
-    this.props.fetchDataIfNeeded(this.props.marker);
+    const { marker, fetchDataIfNeeded } = this.props;
+    fetchDataIfNeeded(marker);
   }
 
   handleDoubleClick = () => {
-    this.setState({editing: true})
+    this.setState({ editing: true })
   }
 
   handleSave = (id, name) => {
+    const { removeMarker, editMarkerName, marker } = this.props;
     if (name.length === 0) {
-      this.props.removeMarker(id)
+      removeMarker(id)
     } else {
-      this.props.editMarkerName(id, Object.assign({}, this.props.marker, {name: name}))
+      editMarkerName(id, { ...marker, name })
     }
-    this.setState({editing: false})
+
+    this.setState({ editing: false })
   }
 
   render() {
-    const {marker, toggleMarker, removeMarker} = this.props;
+    const { marker, toggleMarker, removeMarker } = this.props;
+    const { editing } = this.state;
     let item;
-    if (this.state.editing) {
-      item = (<MarkerInput className="marker-name-editor" input={marker.name} editing={this.state.editing} onSave={(name) => this.handleSave(marker.id, name)}/>)
+    if (editing) {
+      item = (<MarkerInput className="marker-name-editor" input={marker.name} editing={editing} onSave={(name) => this.handleSave(marker.id, name)} />)
     } else {
       item = (
         <div className="marker">
-          <input className="marker-checked-input" type="checkbox" checked={marker.checked} onChange={() => toggleMarker(marker.id)}/>
-          <label className="marker-name label" onDoubleClick={this.handleDoubleClick}>
+
+          <label className="marker-name label" htmlFor={marker.id} onDoubleClick={this.handleDoubleClick}>
+            <input className="marker-checked-input" type="checkbox" id={marker.id} checked={marker.checked} onChange={() => toggleMarker(marker.id)} />
             {marker.name}
           </label>
           {"\t"}
-          <label className="marker-position label">
-            ({marker.position.lat.toFixed(3)}x{marker.position.lng.toFixed(3)})
-          </label>
+          <span className="marker-position label">
+            (
+            {marker.position.lat.toFixed(3)}
+            x
+            {marker.position.lng.toFixed(3)}
+            )
+          </span>
           <button className="marker-remove button" type="button" onClick={() => removeMarker(marker.id)}>x</button>
         </div>
       )
@@ -60,3 +66,12 @@ export default class Marker extends Component {
     )
   }
 }
+
+Marker.propTypes = {
+  marker: PropTypes.shape({ name: PropTypes.arrayOf(), position: PropTypes.arrayOf(), checked: PropTypes.bool, id: PropTypes.string }).isRequired,
+  editMarkerName: PropTypes.func.isRequired,
+  removeMarker: PropTypes.func.isRequired,
+  toggleMarker: PropTypes.func.isRequired,
+  fetchDataIfNeeded: PropTypes.func.isRequired,
+}
+
